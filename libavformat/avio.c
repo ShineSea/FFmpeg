@@ -252,6 +252,7 @@ static const struct URLProtocol *url_find_protocol(const char *filename)
 {
     const URLProtocol **protocols;
     char proto_str[128], proto_nested[128], *ptr;
+	//检索非URL_SCHEME_CHARS字符所在的下表
     size_t proto_len = strspn(filename, URL_SCHEME_CHARS);
     int i;
 
@@ -262,7 +263,7 @@ static const struct URLProtocol *url_find_protocol(const char *filename)
     else
         av_strlcpy(proto_str, filename,
                    FFMIN(proto_len + 1, sizeof(proto_str)));
-
+	
     av_strlcpy(proto_nested, proto_str, sizeof(proto_nested));
     if ((ptr = strchr(proto_nested, '+')))
         *ptr = '\0';

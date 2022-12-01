@@ -100,6 +100,7 @@ int avformat_alloc_output_context2(AVFormatContext **avctx, const AVOutputFormat
 
     if (!oformat) {
         if (format) {
+			//找到对应的outformat
             oformat = av_guess_format(format, NULL, NULL);
             if (!oformat) {
                 av_log(s, AV_LOG_ERROR, "Requested output format '%s' is not a suitable output format\n", format);
@@ -123,6 +124,7 @@ int avformat_alloc_output_context2(AVFormatContext **avctx, const AVOutputFormat
         if (!s->priv_data)
             goto nomem;
         if (s->oformat->priv_class) {
+			//根据 AVClass中option赋值priv_data中变量的默认值
             *(const AVClass**)s->priv_data= s->oformat->priv_class;
             av_opt_set_defaults(s->priv_data);
         }

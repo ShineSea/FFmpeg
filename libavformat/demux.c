@@ -156,8 +156,10 @@ static int init_input(AVFormatContext *s, const char *filename,
     AVProbeData pd = { filename, NULL, 0 };
     int score = AVPROBE_SCORE_RETRY;
 
+    //有内存数据
     if (s->pb) {
         s->flags |= AVFMT_FLAG_CUSTOM_IO;
+        //从内存数据推出avinputformat
         if (!s->iformat)
             return av_probe_input_buffer2(s->pb, &s->iformat, filename,
                                           s, 0, s->format_probesize);
@@ -167,10 +169,12 @@ static int init_input(AVFormatContext *s, const char *filename,
         return 0;
     }
 
+    //根据文件名推测
     if ((s->iformat && s->iformat->flags & AVFMT_NOFILE) ||
         (!s->iformat && (s->iformat = av_probe_input_format2(&pd, 0, &score))))
         return score;
 
+    //打开内存数据推测
     if ((ret = s->io_open(s, &s->pb, filename, AVIO_FLAG_READ | s->avio_flags, options)) < 0)
         return ret;
 
@@ -221,8 +225,10 @@ FF_ENABLE_DEPRECATION_WARNINGS
 int avformat_open_input(AVFormatContext **ps, const char *filename,
                         const AVInputFormat *fmt, AVDictionary **options)
 {
+    //对象
     AVFormatContext *s = *ps;
     FFFormatContext *si;
+    //参数
     AVDictionary *tmp = NULL;
     ID3v2ExtraMeta *id3v2_extra_meta = NULL;
     int ret = 0;
@@ -245,7 +251,7 @@ int avformat_open_input(AVFormatContext **ps, const char *filename,
 
     if ((ret = av_opt_set_dict(s, &tmp)) < 0)
         goto fail;
-
+    //深拷贝
     if (!(s->url = av_strdup(filename ? filename : ""))) {
         ret = AVERROR(ENOMEM);
         goto fail;
